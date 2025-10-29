@@ -1,17 +1,17 @@
 ﻿# ---------- Build fase ----------
 FROM node:20 AS build
 
-# Ga naar de juiste submap
-WORKDIR /app/poke-trade-frontend
+# Zet de werkdirectory
+WORKDIR /app
 
-# Kopieer package bestanden
-COPY poke-trade-frontend/package*.json ./
+# Kopieer ALLES uit de frontend-map (inclusief submappen)
+COPY ./poke-trade-frontend ./poke-trade-frontend
+
+# Ga de submap in
+WORKDIR /app/poke-trade-frontend
 
 # Installeer dependencies
 RUN npm install
-
-# Kopieer alle bestanden van de frontend
-COPY poke-trade-frontend .
 
 # Build met Vite
 RUN npm run build
@@ -23,5 +23,4 @@ FROM nginx:alpine
 COPY --from=build /app/poke-trade-frontend/dist /usr/share/nginx/html
 
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
