@@ -2,7 +2,7 @@
   "name": "untitled3",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "poke-trade-frontend/src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "react-scripts build"

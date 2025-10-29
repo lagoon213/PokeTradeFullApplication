@@ -1,29 +1,27 @@
-﻿# Gebruik een officiële Node image
+﻿# ---------- Bouwfase ----------
 FROM node:20 AS build
 
-# Stel werkdirectory in
+# Stel de werkdirectory in
 WORKDIR /app
 
-# Kopieer dependency-bestanden
-COPY package*.json ./
+# Kopieer package.json + package-lock.json vanuit de submap
+COPY poke-trade-frontend/package*.json ./
 
 # Installeer dependencies
 RUN npm install
 
-# Kopieer alle frontendbestanden
-COPY . .
+# Kopieer de rest van de frontendcode
+COPY poke-trade-frontend ./
 
-# Build de Vite productieversie
+# Build de productieversie
 RUN npm run build
 
-# Gebruik een lichtgewicht webserver (Nginx) om de app te hosten
+# ---------- Productie ----------
 FROM nginx:alpine
 
-# Kopieer de build-output van stap 1 naar de webroot van Nginx
-COPY --from=build /app/dist /usr/share/nginx/html
+# Kopieer de build-output naar Nginx
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Expose poort 80
 EXPOSE 80
 
-# Start de server
 CMD ["nginx", "-g", "daemon off;"]
